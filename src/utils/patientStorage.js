@@ -20,7 +20,7 @@ const preloadDummyPatients = () => {
   if (newOnes.length > 0) {
     const updated = [...existing, ...newOnes];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    console.log("✅ Dummy patients loaded");
+    console.log(" Dummy patients loaded");
   }
 };
 
