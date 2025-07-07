@@ -39,7 +39,7 @@ const Appointments = () => {
   const handleSave = (incident) => {
     incident.patientId = patientId; // ✅ Always attach from query param
     addIncident(incident);
-    setIncidents(getIncidentsByPatient(patientId)); // ✅ Refresh data
+    setIncidents(getIncidentsByPatient(patientId)); //  Refresh data
     setOpenForm(false);
     navigate("/appointments?id=" + patientId, { replace: true });
   };
