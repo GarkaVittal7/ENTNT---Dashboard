@@ -1,0 +1,1 @@
+updateIncident(incidentId, updatedIncident);
