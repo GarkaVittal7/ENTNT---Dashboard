@@ -63,11 +63,19 @@ const Patients = () => {
     }
   };
 
-  const filteredPatients = patients.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.contact.toLowerCase().includes(search.toLowerCase()) ||
-    p.email?.toLowerCase().includes(search.toLowerCase())
+ const filteredPatients = patients.filter((p) => {
+  const name = p.name?.toLowerCase() || "";
+  const contact = p.contact?.toLowerCase() || "";
+  const email = p.email?.toLowerCase() || "";
+  const searchTerm = search.toLowerCase();
+
+  return (
+    name.includes(searchTerm) ||
+    contact.includes(searchTerm) ||
+    email.includes(searchTerm)
   );
+});
+
 
   return (
     <Box>
