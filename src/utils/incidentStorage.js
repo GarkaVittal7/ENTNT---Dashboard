@@ -83,7 +83,7 @@ export const getTopPatients = () => {
   return sorted.map(([patientId, count]) => ({ patientId, count }));
 };
 
-// ✅ NEW: Get revenue total from all completed incidents
+// NEW: Get revenue total from all completed incidents
 export const getTotalRevenue = () => {
   return getIncidents()
     .filter((i) => i.status === "Completed")
