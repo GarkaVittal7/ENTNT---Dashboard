@@ -15,7 +15,7 @@ const PatientForm = ({ open, onClose, onSave, initialData }) => {
     name: "",
     dob: "",
     contact: "",
-    email: "",       // ✅ Added email field
+    email: "",       // Added email field
     healthInfo: "",
     password: ""
   });
