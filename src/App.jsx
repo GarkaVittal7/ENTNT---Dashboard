@@ -8,6 +8,7 @@ import Patients from "./pages/Patients";
 import Appointment from "./pages/Appointment";
 import Calendar from "./pages/Calendar";
 import PatientDashboard from "./pages/PatientDashboard";
+import MyAppointments from "./pages/MyAppointments"; // ✅ import it
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
@@ -21,7 +22,7 @@ const App = () => {
           {/* Public Route */}
           <Route path="/" element={<Login />} />
 
-          {/* Admin Dashboard */}
+          {/* Admin Routes */}
           <Route
             path="/dashboard"
             element={
@@ -32,8 +33,6 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-
-          {/* Admin Routes */}
           <Route
             path="/patients"
             element={
@@ -44,7 +43,6 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/appointments"
             element={
@@ -55,7 +53,6 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/calendar"
             element={
@@ -78,13 +75,22 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/patient-dashboard"
             element={
               <ProtectedRoute allowedRoles={["Patient"]}>
                 <MainLayout>
                   <PatientDashboard />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-appointments"
+            element={
+              <ProtectedRoute allowedRoles={["Patient"]}>
+                <MainLayout>
+                  <MyAppointments />
                 </MainLayout>
               </ProtectedRoute>
             }

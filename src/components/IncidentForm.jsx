@@ -6,7 +6,11 @@ import {
   DialogActions,
   TextField,
   Button,
-  MenuItem
+  MenuItem,
+  Typography,
+  List,
+  ListItem,
+  ListItemText
 } from "@mui/material";
 
 const statuses = ["Pending", "Completed", "In Progress"];
@@ -28,6 +32,8 @@ const IncidentForm = ({ open, onClose, onSave, patientId }) => {
 
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
+    if (!files.length) return;
+
     const base64Files = await Promise.all(
       files.map(
         (file) =>
@@ -39,7 +45,11 @@ const IncidentForm = ({ open, onClose, onSave, patientId }) => {
           })
       )
     );
-    setForm((prev) => ({ ...prev, files: base64Files }));
+
+    setForm((prev) => ({
+      ...prev,
+      files: [...prev.files, ...base64Files]
+    }));
   };
 
   const handleChange = (e) => {
@@ -47,14 +57,6 @@ const IncidentForm = ({ open, onClose, onSave, patientId }) => {
   };
 
   const handleSubmit = () => {
-    console.log("Form fields:", {
-      title: form.title,
-      appointmentDate: form.appointmentDate,
-      cost: form.cost,
-      typeofCost: typeof form.cost
-    });
-
-    // ✅ Validation check
     if (
       !form.title?.trim() ||
       !form.appointmentDate?.trim() ||
@@ -71,14 +73,17 @@ const IncidentForm = ({ open, onClose, onSave, patientId }) => {
       patientId
     };
 
-    console.log("Saving incident:", newIncident);
     onSave(newIncident);
+    handleClose(); // Resets form
+  };
+
+  const handleClose = () => {
     onClose();
     setForm(initialFormState);
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Add Appointment</DialogTitle>
       <DialogContent sx={{ minWidth: 400 }}>
         <TextField
@@ -160,15 +165,33 @@ const IncidentForm = ({ open, onClose, onSave, patientId }) => {
           value={form.nextDate}
           onChange={handleChange}
         />
+
+        {/* File Upload */}
         <input
           type="file"
           multiple
           onChange={handleFileChange}
           style={{ marginTop: 16 }}
         />
+
+        {/* Show selected files */}
+        {form.files.length > 0 && (
+          <>
+            <Typography variant="body2" mt={2} fontWeight="bold">
+              Attached Files:
+            </Typography>
+            <List dense>
+              {form.files.map((file, index) => (
+                <ListItem key={index}>
+                  <ListItemText primary={`📎 ${file.name}`} />
+                </ListItem>
+              ))}
+            </List>
+          </>
+        )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleClose}>Cancel</Button>
         <Button variant="contained" onClick={handleSubmit}>
           Save
         </Button>
