@@ -2,13 +2,14 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
-import Dashboard from "./pages/Dashboard.jsx";
+import Dashboard from "./pages/DashBoard.jsx";
 import Profile from "./pages/Profile";
 import Patients from "./pages/Patients";
 import Appointment from "./pages/Appointment";
 import Calendar from "./pages/Calendar";
 import PatientDashboard from "./pages/PatientDashboard";
-import MyAppointments from "./pages/MyAppointments"; // ✅ import it
+import MyAppointments from "./pages/MyAppointments";
+import MyFiles from "./pages/MyFiles"; // ✅ added
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
@@ -91,6 +92,16 @@ const App = () => {
               <ProtectedRoute allowedRoles={["Patient"]}>
                 <MainLayout>
                   <MyAppointments />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-files"
+            element={
+              <ProtectedRoute allowedRoles={["Patient"]}>
+                <MainLayout>
+                  <MyFiles />
                 </MainLayout>
               </ProtectedRoute>
             }
