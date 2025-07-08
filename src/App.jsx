@@ -2,7 +2,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
-import Dashboard from "./pages/DashBoard.jsx";
+import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Patients from "./pages/Patients";
 import Appointment from "./pages/Appointment";
