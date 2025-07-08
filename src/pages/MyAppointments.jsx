@@ -1,25 +1,56 @@
-// src/pages/MyAppointments.jsx
+// src/pages/Appointments.jsx
 import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
+  Button,
   Card,
   CardContent,
+  Stack,
+  Divider,
   Chip,
-  Link,
-  Divider
+  Paper,
 } from "@mui/material";
-import { getIncidentsByPatient } from "../utils/incidentStorage";
+import { Delete as DeleteIcon, Add as AddIcon } from "@mui/icons-material";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import {
+  getIncidentsByPatient,
+  addIncident,
+  getIncidents,
+  deleteIncident,
+} from "../utils/incidentStorage";
+import IncidentForm from "../components/IncidentForm";
 
-const MyAppointments = () => {
-  const [appointments, setAppointments] = useState([]);
+const Appointments = () => {
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+  const patientId = params.get("id");
+
+  const [incidents, setIncidents] = useState([]);
+  const [openForm, setOpenForm] = useState(false);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (user?.role === "Patient") {
-      setAppointments(getIncidentsByPatient(user.patientId));
+    if (patientId) {
+      setIncidents(getIncidentsByPatient(patientId));
+    } else {
+      setIncidents(getIncidents());
     }
-  }, []);
+  }, [patientId, openForm]);
+
+  const handleSave = (incident) => {
+    incident.patientId = patientId;
+    addIncident(incident);
+    setIncidents(getIncidentsByPatient(patientId));
+    setOpenForm(false);
+    navigate("/appointments?id=" + patientId, { replace: true });
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Delete this appointment?")) {
+      deleteIncident(id);
+      setIncidents(getIncidentsByPatient(patientId));
+    }
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -35,63 +66,117 @@ const MyAppointments = () => {
   };
 
   return (
-    <Box p={3}>
-      <Typography variant="h5" fontWeight="bold" mb={3}>
-        My Appointments
-      </Typography>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "#e0f7fa",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "start",
+        p: 4,
+        position: "relative",
+        top: 0,
+        left: 0,
+        width: "100%",
+        overflowY: "auto",
+      }}
+    >
+      <Paper
+        elevation={4}
+        sx={{
+          p: 4,
+          width: "100%",
+          maxWidth: 1000,
+          borderRadius: 4,
+          backgroundColor: "#fff",
+        }}
+      >
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={3}
+        >
+          <Typography variant="h5" fontWeight="bold">
+            {patientId
+              ? `Appointments for Patient ID: ${patientId}`
+              : "All Appointments"}
+          </Typography>
 
-      {appointments.length === 0 ? (
-        <Typography>No appointments found.</Typography>
-      ) : (
-        appointments.map((appt) => (
-          <Card key={appt.id} sx={{ mb: 2, borderRadius: 2, boxShadow: 2 }}>
-            <CardContent>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant="h6" fontWeight="bold">{appt.title}</Typography>
-                <Chip label={appt.status} color={getStatusColor(appt.status)} />
-              </Box>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setOpenForm(true)}
+            sx={{
+              background: "linear-gradient(to right, #10b981, #22c55e)",
+              fontWeight: "bold",
+            }}
+          >
+            Add Appointment
+          </Button>
+        </Box>
 
-              <Typography><strong>Date:</strong> {new Date(appt.appointmentDate).toLocaleString()}</Typography>
-              <Typography><strong>Cost:</strong> ₹{appt.cost}</Typography>
-              {appt.treatment && <Typography><strong>Treatment:</strong> {appt.treatment}</Typography>}
-              {appt.description && <Typography><strong>Description:</strong> {appt.description}</Typography>}
-              {appt.comments && <Typography><strong>Comments:</strong> {appt.comments}</Typography>}
-              <Typography>
-                <strong>Visited:</strong>{" "}
-                <Chip
-                  label={appt.visited ? "Visited" : "Not Visited"}
-                  size="small"
-                  color={appt.visited ? "success" : "error"}
-                />
-              </Typography>
+        {incidents.length === 0 ? (
+          <Typography>No appointments found.</Typography>
+        ) : (
+          incidents.map((i) => (
+            <Card key={i.id} sx={{ mb: 2, borderRadius: 2, boxShadow: 2 }}>
+              <CardContent>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography variant="h6" fontWeight="bold">
+                    {i.title}
+                  </Typography>
+                  <Chip label={i.status} color={getStatusColor(i.status)} />
+                </Box>
 
-              {/* Files */}
-              {appt.files?.length > 0 && (
-                <>
-                  <Divider sx={{ my: 1 }} />
-                  <Typography variant="body2" fontWeight="bold">Files:</Typography>
-                  {appt.files.map((file, idx) => (
-                    <Link
-                      key={idx}
-                      href={file.url}
-                      download={file.name}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      underline="hover"
-                      display="block"
-                      variant="body2"
-                    >
-                      📎 {file.name}
-                    </Link>
-                  ))}
-                </>
-              )}
-            </CardContent>
-          </Card>
-        ))
-      )}
+                <Typography>
+                  <strong>Date:</strong>{" "}
+                  {new Date(i.appointmentDate).toLocaleString()}
+                </Typography>
+                <Typography>
+                  <strong>Cost:</strong> ₹{i.cost}
+                </Typography>
+                {i.description && (
+                  <Typography>
+                    <strong>Description:</strong> {i.description}
+                  </Typography>
+                )}
+                {i.comments && (
+                  <Typography>
+                    <strong>Comments:</strong> {i.comments}
+                  </Typography>
+                )}
+
+                <Divider sx={{ my: 2 }} />
+
+                <Stack direction="row" spacing={2}>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    startIcon={<DeleteIcon />}
+                    onClick={() => handleDelete(i.id)}
+                  >
+                    Delete
+                  </Button>
+                </Stack>
+              </CardContent>
+            </Card>
+          ))
+        )}
+
+        <IncidentForm
+          open={openForm}
+          onClose={() => setOpenForm(false)}
+          onSave={handleSave}
+          patientId={patientId}
+        />
+      </Paper>
     </Box>
   );
 };
 
-export default MyAppointments;
+export default Appointments;
