@@ -36,12 +36,12 @@ const Dashboard = () => {
     .sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate))
     .slice(0, 10);
 
-  // Top patients by appointment count
   const topPatientsMap = {};
   incidents.forEach(i => {
     if (!topPatientsMap[i.patientId]) topPatientsMap[i.patientId] = 0;
     topPatientsMap[i.patientId]++;
   });
+
   const topPatients = Object.entries(topPatientsMap)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
@@ -66,10 +66,10 @@ const Dashboard = () => {
       </Typography>
 
       {/* KPI Cards */}
-      <Grid container spacing={3}>
+      <Grid container spacing={3} alignItems="stretch">
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ borderTop: "5px solid #3b82f6", borderRadius: 2, boxShadow: 3 }}>
-            <CardContent>
+          <Card sx={{ height: "100%", borderTop: "5px solid #3b82f6", borderRadius: 2, boxShadow: 3 }}>
+            <CardContent sx={{ display: "flex", flexDirection: "column", height: "100%", justifyContent: "center" }}>
               <Stack direction="row" spacing={2} alignItems="center">
                 <CalendarMonthIcon sx={{ fontSize: 40, color: "#3b82f6" }} />
                 <Box>
@@ -82,8 +82,8 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ borderTop: "5px solid #10b981", borderRadius: 2, boxShadow: 3 }}>
-            <CardContent>
+          <Card sx={{ height: "100%", borderTop: "5px solid #10b981", borderRadius: 2, boxShadow: 3 }}>
+            <CardContent sx={{ display: "flex", flexDirection: "column", height: "100%", justifyContent: "center" }}>
               <Stack direction="row" spacing={2} alignItems="center">
                 <MonetizationOnIcon sx={{ fontSize: 40, color: "#10b981" }} />
                 <Box>
@@ -96,8 +96,8 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ borderTop: "5px solid #f97316", borderRadius: 2, boxShadow: 3 }}>
-            <CardContent>
+          <Card sx={{ height: "100%", borderTop: "5px solid #f97316", borderRadius: 2, boxShadow: 3 }}>
+            <CardContent sx={{ display: "flex", flexDirection: "column", height: "100%", justifyContent: "center" }}>
               <Typography variant="subtitle2" mb={1}>TREATMENTS STATUS</Typography>
               <Typography>✅ Completed: {completed}</Typography>
               <Typography>🕓 Pending: {pending}</Typography>
@@ -107,8 +107,8 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ borderTop: "5px solid #8b5cf6", borderRadius: 2, boxShadow: 3 }}>
-            <CardContent>
+          <Card sx={{ height: "100%", borderTop: "5px solid #8b5cf6", borderRadius: 2, boxShadow: 3 }}>
+            <CardContent sx={{ display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
               <Typography variant="subtitle2" mb={1}>TOP PATIENTS</Typography>
               {topPatients.length === 0 ? (
                 <Typography>No data</Typography>
@@ -116,7 +116,7 @@ const Dashboard = () => {
                 <List dense>
                   {topPatients.map((p, i) => (
                     <ListItem key={i} disablePadding>
-                      <ListItemText primary={`${p.name}`} secondary={`Visits: ${p.count}`} />
+                      <ListItemText primary={p.name} secondary={`Visits: ${p.count}`} />
                     </ListItem>
                   ))}
                 </List>
@@ -148,7 +148,18 @@ const Dashboard = () => {
                     <Typography variant="body2">
                       Cost: ₹{a.cost}
                     </Typography>
-                    <Chip label={a.status} color="primary" size="small" sx={{ mt: 1 }} />
+                    <Chip
+                      label={a.status}
+                      size="small"
+                      sx={{ mt: 1 }}
+                      color={
+                        a.status === "Completed"
+                          ? "success"
+                          : a.status === "In Progress"
+                          ? "warning"
+                          : "info"
+                      }
+                    />
                   </CardContent>
                 </Card>
               </Grid>
