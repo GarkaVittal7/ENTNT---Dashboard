@@ -8,7 +8,7 @@ import {
   ListItemText,
   Toolbar
 } from "@mui/material";
-import { Dashboard, Person, CalendarMonth, Settings, FileCopy } from "@mui/icons-material";
+import { Dashboard, Person, CalendarMonth, FileCopy } from "@mui/icons-material";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -22,8 +22,7 @@ const Sidebar = () => {
     { text: "Dashboard", icon: <Dashboard />, path: "/dashboard" },
     { text: "Patients", icon: <Person />, path: "/patients" },
     { text: "Appointments", icon: <CalendarMonth />, path: "/appointments" },
-    { text: "Calendar", icon: <CalendarMonth />, path: "/calendar" },
-    { text: "Settings", icon: <Settings />, path: "/settings" }
+    { text: "Calendar", icon: <CalendarMonth />, path: "/calendar" }
   ];
 
   const patientLinks = [
